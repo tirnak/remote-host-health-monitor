@@ -20,6 +20,7 @@ public class Configuration {
     public final Logger.LogLevel logLevel;
     private final List<String> hosts;
     private final String tracerouteTemplate;
+    private final String icmpPingTemplate;
 
     public Configuration(Properties input) throws Exception {
         hosts = Arrays.asList(input.getProperty("hosts").split(","));
@@ -34,6 +35,7 @@ public class Configuration {
                 Integer.parseInt(input.getProperty("http.timeout")));
 
         tracerouteTemplate = input.getProperty("traceroute.command");
+        icmpPingTemplate = input.getProperty("icmp.command");
 
         pathToLogFile = Paths.get(input.getProperty("log.file"));
 
@@ -42,5 +44,12 @@ public class Configuration {
 
     public List<String> getHosts() {
         return new ArrayList<>(hosts);
+    }
+
+    /**
+     * TODO make "%" a constant, add to docs.
+     */
+    public String templateIcmpPing(String host) {
+        return icmpPingTemplate.replace("%", host);
     }
 }
