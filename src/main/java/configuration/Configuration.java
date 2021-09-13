@@ -52,4 +52,8 @@ public class Configuration {
     public String templateIcmpPing(String host) {
         return icmpPingTemplate.replace("%", host);
     }
+
+    public String templateTraceRoute(String host) {
+        return tracerouteTemplate.replace("%", host);
+    }
 }

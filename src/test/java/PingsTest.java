@@ -35,19 +35,17 @@ public class PingsTest {
         assertTrue(storage.getLastEntriesForAHost("google.lu").get(IcmpPinger.class).isSuccessful());
     }
 
-
-//    @Test
-//    @Ignore
-//    public void happyPathTraceroute() throws Exception {
-//        Configuration configuration = new Configuration(ConfigurationTest.getMinimumProperties());
-//        PingResultsStorage storage = getMockedStorage();
-//        Pinger pinger = new RouteTracer(configuration, storage, getMockedReporter(), getMockedLogger(configuration));
-//        Map<String, Runnable> icmpPingerRunnables = pinger.createRunnables();
-//        String host = "google.lu";
-//        Runnable job = icmpPingerRunnables.get(host);
-//        job.run();
-//        assertTrue(storage.getLastEntriesForAHost("google.lu").get(IcmpPinger.class).isSuccessful());
-//    }
+    @Test
+    public void happyPathTraceroute() throws Exception {
+        Configuration configuration = new Configuration(ConfigurationTest.getMinimumProperties());
+        PingResultsStorage storage = getMockedStorage();
+        Pinger pinger = new RouteTracer(configuration, storage, getMockedReporter(), getMockedLogger(configuration));
+        Map<String, Runnable> RouteTracerRunnables = pinger.createRunnables();
+        String host = "google.lu";
+        Runnable job = RouteTracerRunnables.get(host);
+        job.run();
+        assertTrue(storage.getLastEntriesForAHost("google.lu").get(RouteTracer.class).isSuccessful());
+    }
 
     /**
      * TODO replace with more reliable endpoint.

@@ -33,17 +33,17 @@ public class RouteTracer implements Pinger {
                     Runnable job = () -> {
                         Result result = SimpleResult.getDefault();
                         try {
-                            String cmd = configuration.templateIcmpPing(host);
+                            String cmd = configuration.templateTraceRoute(host);
                             ProcessRunner shellRunner = new ProcessRunner(cmd);
                             result = shellRunner.execute();
-                            storage.save(host, IcmpPinger.class, result);
+                            storage.save(host, RouteTracer.class, result);
 
                         } catch (IOException | InterruptedException e) {
                             result = new SimpleResult(
                                     false,
                                     e.getMessage()
                             );
-                            storage.save(host, IcmpPinger.class, result);
+                            storage.save(host, RouteTracer.class, result);
                         } finally {
                             if (!result.isSuccessful()) {
                                 Map<Class<? extends Pinger>, Result> lastEntries = storage.getLastEntriesForAHost(host);
