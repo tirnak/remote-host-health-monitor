@@ -51,3 +51,17 @@ Would consist of the following entries:
 - Ping command line
 - path to log file
 - log level 
+
+
+#### Roadmap
+- Support for ICMP
+- Support for HTTP
+- Support for traceroute
+- Reporting functionality
+- Logging
+- Scheduling
+- Add persistence layer
+- Improve test coverage, split unit and integration tests
+- Add checkstyle
+- Dockerize the solution, write docker-compose to start this app, Redis and a mock container for reporting
+- Create CI job 

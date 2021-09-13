@@ -25,6 +25,9 @@ public class RouteTracer implements Pinger {
         this.logger = logger;
     }
 
+    public static String getReportName() {
+        return "trace";
+    }
 
     @Override
     public Map<String, Runnable> createRunnables() {

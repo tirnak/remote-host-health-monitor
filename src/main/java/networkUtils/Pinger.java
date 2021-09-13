@@ -10,6 +10,10 @@ public interface Pinger {
 
     public Map<String, Runnable> createRunnables();
 
+    public static String getReportName() {
+        throw new UnsupportedOperationException("name should be redefined in children");
+    };
+
     interface Result {
         boolean isSuccessful();
         String getOutput();
@@ -31,7 +35,7 @@ public interface Pinger {
 
         @Override
         public String getOutput() {
-            return output;
+            return output != null ? output : "Unknown ping error.";
         }
 
         public static Result getDefault() {
@@ -55,7 +59,7 @@ public interface Pinger {
 
         @Override
         public String getOutput() {
-            return result;
+            return result == null ? "" : result;
         }
     }
 
@@ -76,7 +80,7 @@ public interface Pinger {
 
         @Override
         public String getOutput() {
-            return result;
+            return result == null ? "" : result;
         }
     }
 
@@ -101,8 +105,15 @@ public interface Pinger {
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(process.getInputStream()));
 
+            BufferedReader errorReader = new BufferedReader(
+                    new InputStreamReader(process.getErrorStream()));
+
             String line;
             while ((line = reader.readLine()) != null) {
+                output.append(line + "\n");
+            }
+
+            while ((line = errorReader.readLine()) != null) {
                 output.append(line + "\n");
             }
 

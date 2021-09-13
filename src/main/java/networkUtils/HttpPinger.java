@@ -29,6 +29,10 @@ public class HttpPinger implements Pinger {
         this.logger = logger;
     }
 
+    public static String getReportName() {
+        return "tcp_ping";
+    }
+
     @Override
     public Map<String, Runnable> createRunnables() {
         List<Map.Entry<String, Runnable>> jobsForHosts = configuration.getHosts().stream()

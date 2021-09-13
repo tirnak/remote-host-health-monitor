@@ -15,6 +15,7 @@ public class Logger {
     public void warn(String s) {
         try {
             FileWriter writer = new FileWriter(fileTowrite.toFile());
+            writer.append("[WARN] ");
             writer.append(s);
             writer.append("\n");
             writer.flush();

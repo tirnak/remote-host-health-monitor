@@ -52,7 +52,7 @@ public class PingsTest {
      * New endpoints can be created at https://webhook.site/
      */
     @Test
-    public void simpleHttpPing() throws Exception {
+    public void happyPathHttpPing() throws Exception {
         Properties properties = ConfigurationTest.getMinimumProperties();
         String host = "webhook.site/741b40fe-9d21-48b5-a554-fed107198567";
         properties.setProperty("hosts", host);
@@ -65,8 +65,40 @@ public class PingsTest {
         assertTrue(storage.getLastEntriesForAHost(host).get(HttpPinger.class).isSuccessful());
     }
 
+    /**
+     * Not a real test, but a testing ground to test Report functionality.
+     */
+    @Ignore
+    @Test
+    public void ReportGeneration() throws Exception {
+        Properties properties = ConfigurationTest.getMinimumProperties();
+        String host = "https://nonexistingdomain.io/";
+
+        properties.setProperty("hosts", host);
+        properties.setProperty("report-receiving-host", "webhook.site/741b40fe-9d21-48b5-a554-fed107198567");
+        Configuration configuration = new Configuration(properties);
+        PingResultsStorage storage = getMockedStorage();
+
+        Pinger pinger = new HttpPinger(configuration, storage, new Reporter(configuration), getMockedLogger(configuration));
+        Runnable httpPingerRunnable = pinger.createRunnables().get(host);
+        httpPingerRunnable.run();
+
+        pinger = new IcmpPinger(configuration, storage, new Reporter(configuration), getMockedLogger(configuration));
+        Runnable icmpPingerRunnable = pinger.createRunnables().get(host);
+        icmpPingerRunnable.run();
+
+        pinger = new RouteTracer(configuration, storage, new Reporter(configuration), getMockedLogger(configuration));
+        Runnable traceRouteRunnable = pinger.createRunnables().get(host);
+        traceRouteRunnable.run();
+    }
+
     private static Reporter getMockedReporter() {
-        return new Reporter();
+        return new Reporter(null) {
+            @Override
+            public void notify(String host, Map<Class<? extends Pinger>, Pinger.Result> lastEntries) {
+                // do nothing
+            }
+        } ;
     }
 
     public static PingResultsStorage getMockedStorage() {
