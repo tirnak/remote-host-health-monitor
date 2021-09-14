@@ -61,6 +61,7 @@ Would consist of the following entries:
 - Logging
 - Scheduling
 - Add persistence layer
+||| current status |||
 - Improve test coverage, split unit and integration tests
 - Add checkstyle
 - Dockerize the solution, write docker-compose to start this app, Redis and a mock container for reporting
