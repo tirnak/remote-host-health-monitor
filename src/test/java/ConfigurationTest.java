@@ -26,6 +26,8 @@ public class ConfigurationTest {
         properties.setProperty("icmp.timeout", "3");
         properties.setProperty("http.interval", "5");
         properties.setProperty("http.timeout", "3");
+        properties.setProperty("traceroute.interval", "5");
+        properties.setProperty("traceroute.timeout", "3");
         properties.setProperty("traceroute.command", "traceroute %");
         properties.setProperty("icmp.command", "ping -c1 %");
 

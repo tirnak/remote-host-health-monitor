@@ -16,6 +16,8 @@ public class Configuration {
     public final Duration icmpTimeout;
     public final Duration httpInterval;
     public final Duration httpTimeout;
+    public final Duration tracerouteInterval;
+    public final Duration tracerouteTimeout;
     public final Path pathToLogFile;
     public final Logger.LogLevel logLevel;
     private final List<String> hosts;
@@ -33,6 +35,10 @@ public class Configuration {
                 Integer.parseInt(input.getProperty("http.interval")));
         httpTimeout = Duration.ofSeconds(
                 Integer.parseInt(input.getProperty("http.timeout")));
+        tracerouteInterval = Duration.ofSeconds(
+                Integer.parseInt(input.getProperty("traceroute.interval")));
+        tracerouteTimeout = Duration.ofSeconds(
+                Integer.parseInt(input.getProperty("traceroute.timeout")));
 
         tracerouteTemplate = input.getProperty("traceroute.command");
         icmpPingTemplate = input.getProperty("icmp.command");

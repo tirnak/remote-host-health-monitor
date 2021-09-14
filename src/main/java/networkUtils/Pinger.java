@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public interface Pinger {
 
@@ -106,8 +108,9 @@ public interface Pinger {
 
         /**
          * Careful, blocking operation!
+         * @param timeout
          */
-        public Pinger.Result execute() throws IOException, InterruptedException {
+        public Pinger.Result execute(Duration timeout) throws IOException, InterruptedException {
             ProcessBuilder processBuilder = new ProcessBuilder();
 
             processBuilder.command(command.split("\\s+"));
@@ -130,7 +133,8 @@ public interface Pinger {
                 output.append(line + "\n");
             }
 
-            int exitVal = process.waitFor();
+            boolean success = process.waitFor(timeout.toSeconds(), TimeUnit.SECONDS);
+            int exitVal = success ? process.exitValue() : -1;
             return new Pinger.ProcessResult(exitVal, output.toString());
         }
     }

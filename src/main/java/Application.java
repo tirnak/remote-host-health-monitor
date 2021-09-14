@@ -4,6 +4,11 @@ import java.io.FileInputStream;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import logger.Logger;
 import networkUtils.HttpPinger;
 import networkUtils.IcmpPinger;
@@ -27,18 +32,22 @@ public class Application {
 
         PingResultsStorage storage = new RedisStorage();
 
-        String host = "google.lu";
+        ScheduledExecutorService pool = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors());
 
-        Pinger pinger = new HttpPinger(configuration, storage, new Reporter(configuration), new Logger(configuration.pathToLogFile));
-        Runnable httpPingerRunnable = pinger.createRunnables().get(host);
-        httpPingerRunnable.run();
+        Pinger httpPinger = new HttpPinger(configuration, storage, new Reporter(configuration), new Logger(configuration.pathToLogFile));
+        for (Runnable pingingTask : httpPinger.createRunnables().values()) {
+            pool.scheduleWithFixedDelay(pingingTask, 0, configuration.httpInterval.toSeconds(), TimeUnit.SECONDS);
+        }
 
-        pinger = new IcmpPinger(configuration, storage, new Reporter(configuration), new Logger(configuration.pathToLogFile));
-        Runnable icmpPingerRunnable = pinger.createRunnables().get(host);
-        icmpPingerRunnable.run();
+        Pinger icmpPinger = new IcmpPinger(configuration, storage, new Reporter(configuration), new Logger(configuration.pathToLogFile));
+        for (Runnable pingingTask : icmpPinger.createRunnables().values()) {
+            pool.scheduleWithFixedDelay(pingingTask, 0, configuration.icmpInterval.toSeconds(), TimeUnit.SECONDS);
+        }
 
-        pinger = new RouteTracer(configuration, storage, new Reporter(configuration), new Logger(configuration.pathToLogFile));
-        Runnable traceRouteRunnable = pinger.createRunnables().get(host);
-        traceRouteRunnable.run();
+        Pinger routeTracer = new RouteTracer(configuration, storage, new Reporter(configuration), new Logger(configuration.pathToLogFile));
+        for (Runnable pingingTask : routeTracer.createRunnables().values()) {
+            pool.scheduleWithFixedDelay(pingingTask, 0, configuration.tracerouteInterval.toSeconds(), TimeUnit.SECONDS);
+        }
+
     }
 }

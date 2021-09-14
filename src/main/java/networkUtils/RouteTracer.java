@@ -38,7 +38,7 @@ public class RouteTracer implements Pinger {
                         try {
                             String cmd = configuration.templateTraceRoute(host);
                             ProcessRunner shellRunner = new ProcessRunner(cmd);
-                            result = shellRunner.execute();
+                            result = shellRunner.execute(configuration.tracerouteTimeout);
                             storage.save(host, RouteTracer.class, result);
 
                         } catch (IOException | InterruptedException e) {

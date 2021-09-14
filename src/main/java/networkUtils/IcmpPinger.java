@@ -2,7 +2,6 @@ package networkUtils;
 
 import configuration.Configuration;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +34,7 @@ public class IcmpPinger implements Pinger {
                     try {
                         String cmd = configuration.templateIcmpPing(host);
                         ProcessRunner shellRunner = new ProcessRunner(cmd);
-                        result = shellRunner.execute();
+                        result = shellRunner.execute(configuration.icmpTimeout);
                         storage.save(host, IcmpPinger.class, result);
 
                     } catch (IOException | InterruptedException e) {
