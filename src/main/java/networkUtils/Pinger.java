@@ -17,6 +17,19 @@ public interface Pinger {
     interface Result {
         boolean isSuccessful();
         String getOutput();
+
+        default String serialize() {
+            return "" + isSuccessful() + "$" + getOutput();
+        }
+
+        // add validation, maybe move out
+        static Result fromString(String serialized) {
+            String[] entries = serialized.split("\\$");
+            return new SimpleResult(
+                Boolean.parseBoolean(entries[0]),
+                entries[1]
+            );
+        }
     }
 
     static class SimpleResult implements Result {
